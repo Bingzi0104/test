@@ -1,0 +1,60 @@
+import java.util.*;
+
+public class test1 {
+    public static int min(String source, String target) {
+        int sourlen=source.length();
+        int tarlen=target.length();
+        Map<Character,List<Integer>> pos=new HashMap<>();
+        for (int i=0;i<sourlen;i++) {
+            char c=source.charAt(i);
+            if(!pos.containsKey(c)){
+                pos.put(c,new ArrayList<>());
+            }
+            pos.get(c).add(i);
+        }
+        int result = 0;
+        int index = 0;
+
+        while (index<tarlen) {
+            int sourindex=-1,prev=index;
+            for (;index<tarlen;index++) {
+                char c=target.charAt(index);
+                if(!pos.containsKey(c)) return -1;
+                List<Integer> positions=pos.get(c);
+                int next=binarySearch(positions,sourindex);
+                if (next== -1) {
+                    break;
+                }
+                sourindex=positions.get(next);
+            }
+
+               result++;
+            if (index==prev) {
+                return -1;
+            }
+        }
+
+        return result;
+    }
+    private static int binarySearch(List<Integer> positions, int current) {
+        int left = 0,right = positions.size() - 1;
+        while(left<=right) {
+            int mid=left+(right-left)/ 2;
+            if (positions.get(mid)>current) {
+                right=mid-1;
+            } else {
+                left=mid+1;
+            }
+        }
+        return left<positions.size()?left:-1;
+    }
+
+    public static void main(String[] args) {
+        Scanner sc=new Scanner(System.in);
+        String source=sc.nextLine();
+        String target=sc.nextLine();
+
+        int res=min(source, target);
+        System.out.println(res);
+    }
+}
